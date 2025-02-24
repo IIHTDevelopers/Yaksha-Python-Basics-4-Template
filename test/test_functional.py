@@ -14,7 +14,6 @@ from BloodBankManagementSystem import (
     add_new_blood_group,
 
     get_total_units,
-    find_scarcity
 )
 
 
