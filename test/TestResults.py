@@ -1,4 +1,6 @@
 import json
+
+
 class TestResults(dict):
     testCaseResults = ""
     customData = ""
