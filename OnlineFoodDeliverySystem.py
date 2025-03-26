@@ -4,7 +4,7 @@ def get_menu():
     update the price given from the document
     """
     return {
-        "Pizza": 0,  # Wrong price
+        "Pizza": 0,  # Wrong price you need to change the price
         "Burger": 0,  # Wrong price
         "Pasta": 0,  # Wrong price
         "Fries": 0,  # Wrong price
