@@ -8,7 +8,7 @@ def get_employee_data():
         dict: Employee details including name and leave balance.
     """
     return {
-        "E001": {"name": "John Doe", "leave_balance": 15},  # Wrong balance
+        "E001": {"name": "John Doe", "leave_balance": 15},  # Wrong balance you need to update the balance from the document 
         "E002": {"name": "Alice Smith", "leave_balance": 12},  # Wrong balance
         "E003": {"name": "Bob Johnson", "leave_balance": 10},  # Wrong balance
         "E004": {"name": "Emma Davis", "leave_balance": 18},  # Wrong balance
