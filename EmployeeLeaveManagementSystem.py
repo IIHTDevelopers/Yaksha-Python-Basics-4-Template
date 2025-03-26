@@ -25,6 +25,7 @@ def process_leave_requests(employees, leave_requests):
 
     Returns:
         list: Leave request summary messages.
+        sample format John Doe granted x days leave. Remaining: x days
     """
     summary = []
 
