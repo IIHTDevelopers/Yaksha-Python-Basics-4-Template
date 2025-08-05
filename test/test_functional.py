@@ -18,9 +18,11 @@ class TestEmployeeLeave(unittest.TestCase):
         try:
             result = total_leaves_taken(self.test_df)
             expected = 16
-            self.test_obj.yakshaAssert("TestTotalLeavesTaken", result == expected, "functional")
-            print("TestTotalLeavesTaken =", "Passed" if result == expected else "Failed")
+            status = result == expected
+            self.test_obj.yakshaAssert("TestTotalLeavesTaken", status, "functional")
+            print("TestTotalLeavesTaken =", "Passed" if status else "Failed")
         except Exception as e:
+            self.test_obj.yakshaAssert("TestTotalLeavesTaken", False, "functional")
             print("TestTotalLeavesTaken = Failed due to Exception:", e)
 
     def test_employees_exceeding_leaves(self):
@@ -28,19 +30,24 @@ class TestEmployeeLeave(unittest.TestCase):
             result = employees_exceeding_leaves(self.test_df, limit=5)
             expected_ids = [103]
             actual_ids = result["Employee ID"].tolist()
-            self.test_obj.yakshaAssert("TestExceedingLeaves", actual_ids == expected_ids, "functional")
-            print("TestExceedingLeaves =", "Passed" if actual_ids == expected_ids else "Failed")
+            status = actual_ids == expected_ids
+            self.test_obj.yakshaAssert("TestExceedingLeaves", status, "functional")
+            print("TestExceedingLeaves =", "Passed" if status else "Failed")
         except Exception as e:
+            self.test_obj.yakshaAssert("TestExceedingLeaves", False, "functional")
             print("TestExceedingLeaves = Failed due to Exception:", e)
 
     def test_average_leaves(self):
         try:
             result = average_leaves_taken(self.test_df)
             expected = 4.0
-            self.test_obj.yakshaAssert("TestAverageLeaves", result == expected, "functional")
-            print("TestAverageLeaves =", "Passed" if result == expected else "Failed")
+            status = result == expected
+            self.test_obj.yakshaAssert("TestAverageLeaves", status, "functional")
+            print("TestAverageLeaves =", "Passed" if status else "Failed")
         except Exception as e:
+            self.test_obj.yakshaAssert("TestAverageLeaves", False, "functional")
             print("TestAverageLeaves = Failed due to Exception:", e)
+
 import unittest
 import pandas as pd
 from BloodBankManagementSystem import total_units, low_stock_groups
@@ -60,9 +67,11 @@ class TestBloodBank(unittest.TestCase):
         try:
             result = total_units(self.blood_df)
             expected = 25
-            self.test_obj.yakshaAssert("TestTotalUnits", result == expected, "functional")
-            print("TestTotalUnits =", "Passed" if result == expected else "Failed")
+            status = result == expected
+            self.test_obj.yakshaAssert("TestTotalUnits", status, "functional")
+            print("TestTotalUnits =", "Passed" if status else "Failed")
         except Exception as e:
+            self.test_obj.yakshaAssert("TestTotalUnits", False, "functional")
             print("TestTotalUnits = Failed due to Exception:", e)
 
     def test_low_stock(self):
@@ -70,9 +79,11 @@ class TestBloodBank(unittest.TestCase):
             result = low_stock_groups(self.blood_df, threshold=5)
             expected_groups = ["O-", "AB-"]
             actual_groups = result["Blood Group"].tolist()
-            self.test_obj.yakshaAssert("TestLowStockGroups", actual_groups == expected_groups, "functional")
-            print("TestLowStockGroups =", "Passed" if actual_groups == expected_groups else "Failed")
+            status = actual_groups == expected_groups
+            self.test_obj.yakshaAssert("TestLowStockGroups", status, "functional")
+            print("TestLowStockGroups =", "Passed" if status else "Failed")
         except Exception as e:
+            self.test_obj.yakshaAssert("TestLowStockGroups", False, "functional")
             print("TestLowStockGroups = Failed due to Exception:", e)
 import unittest
 from food import read_food_items, classify_food_items
@@ -91,9 +102,11 @@ class TestFoodDelivery(unittest.TestCase):
         try:
             result = read_food_items(self.test_file)
             expected = [("Pizza", "Veg"), ("Chicken Wings", "Non-Veg"), ("Pasta", "Veg"), ("Fish Fry", "Non-Veg")]
-            self.test_obj.yakshaAssert("TestReadFoodItems", result == expected, "functional")
-            print("TestReadFoodItems =", "Passed" if result == expected else "Failed")
+            status = result == expected
+            self.test_obj.yakshaAssert("TestReadFoodItems", status, "functional")
+            print("TestReadFoodItems =", "Passed" if status else "Failed")
         except Exception as e:
+            self.test_obj.yakshaAssert("TestReadFoodItems", False, "functional")
             print("TestReadFoodItems = Failed due to Exception:", e)
 
     def test_classify_food_items(self):
@@ -104,7 +117,9 @@ class TestFoodDelivery(unittest.TestCase):
                 "Veg": ["Pizza", "Pasta"],
                 "Non-Veg": ["Chicken Wings", "Fish Fry"]
             }
-            self.test_obj.yakshaAssert("TestClassifyFoodItems", result == expected, "functional")
-            print("TestClassifyFoodItems =", "Passed" if result == expected else "Failed")
+            status = result == expected
+            self.test_obj.yakshaAssert("TestClassifyFoodItems", status, "functional")
+            print("TestClassifyFoodItems =", "Passed" if status else "Failed")
         except Exception as e:
+            self.test_obj.yakshaAssert("TestClassifyFoodItems", False, "functional")
             print("TestClassifyFoodItems = Failed due to Exception:", e)
