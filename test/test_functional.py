@@ -1,237 +1,110 @@
-# test/test_all_management_systems.py
-
 import unittest
-import sys
-import os
 import pandas as pd
-
-# Adjusting the path to import TestUtils and the required modules
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from EmployeeLeaveManagementSystem import total_leaves_taken, employees_exceeding_leaves, average_leaves_taken
 from test.TestUtils import TestUtils
-from OnlineFoodDeliverySystem import get_menu, calculate_bill, save_order
-from BloodBankManagementSystem import (
-    get_blood_bank_data,
-    add_new_blood_group,
 
-    get_total_units,
-)
+class TestEmployeeLeave(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        cls.test_obj = TestUtils()
+        cls.test_df = pd.DataFrame({
+            "Employee ID": [101, 102, 103, 104],
+            "Name": ["Alice", "Bob", "Charlie", "Diana"],
+            "Leaves Taken": [5, 2, 8, 1]
+        })
 
-
-class TestManagementSystems(unittest.TestCase):
-    def setUp(self):
-        # Initialize TestUtils object for yaksha assertions
-        self.test_obj = TestUtils()
-
-        # ===== Online Food Delivery System =====
-        self.menu = get_menu()
-        self.orders = [
-            ("Pizza", 2),
-            ("Burger", 1),
-            ("Pasta", 3),
-            ("Fries", 2),
-            ("Cola", 2)
-        ]
-        self.expected_total_bill = 54.75
-        self.expected_order_summary = [
-            "Pizza x2 = $17.00",
-            "Burger x1 = $5.00",
-            "Pasta x3 = $21.75",
-            "Fries x2 = $7.00",
-            "Cola x2 = $4.00"
-        ]
-        self.food_filename = "test_food_orders.txt"
-
-        # ===== Blood Bank Management System =====
-        self.blood_bank = get_blood_bank_data()
-
-
-
-    # ========== Online Food Delivery System Tests ==========
-    def test_get_menu(self):
-        """
-        Test case for get_menu() function.
-        """
+    def test_total_leaves_taken(self):
         try:
-            result = get_menu()
-            expected_result = {
-                "Pizza": 8.50,
-                "Burger": 5.00,
-                "Pasta": 7.25,
-                "Fries": 3.50,
-                "Cola": 2.00
-            }
-            if result == expected_result:
-                self.test_obj.yakshaAssert("TestGetMenu", True, "functional")
-                print("TestGetMenu = Passed")
-            else:
-                self.test_obj.yakshaAssert("TestGetMenu", False, "functional")
-                print("TestGetMenu = Failed")
+            result = total_leaves_taken(self.test_df)
+            expected = 16
+            self.test_obj.yakshaAssert("TestTotalLeavesTaken", result == expected, "functional")
+            print("TestTotalLeavesTaken =", "Passed" if result == expected else "Failed")
         except Exception as e:
-            self.test_obj.yakshaAssert("TestGetMenu", False, "functional")
-            print(f"TestGetMenu = Failed ")
+            print("TestTotalLeavesTaken = Failed due to Exception:", e)
 
-    def test_calculate_bill(self):
-        """
-        Test case for calculate_bill() function.
-        """
+    def test_employees_exceeding_leaves(self):
         try:
-            total_bill, order_summary = calculate_bill(self.orders, self.menu)
-            result = (
-                round(total_bill, 2) == self.expected_total_bill and
-                order_summary == self.expected_order_summary
-            )
-            if result:
-                self.test_obj.yakshaAssert("TestCalculateBill", True, "functional")
-                print("TestCalculateBill = Passed")
-            else:
-                self.test_obj.yakshaAssert("TestCalculateBill", False, "functional")
-                print("TestCalculateBill = Failed")
+            result = employees_exceeding_leaves(self.test_df, limit=5)
+            expected_ids = [103]
+            actual_ids = result["Employee ID"].tolist()
+            self.test_obj.yakshaAssert("TestExceedingLeaves", actual_ids == expected_ids, "functional")
+            print("TestExceedingLeaves =", "Passed" if actual_ids == expected_ids else "Failed")
         except Exception as e:
-            self.test_obj.yakshaAssert("TestCalculateBill", False, "functional")
-            print(f"TestCalculateBill = Failed ")
+            print("TestExceedingLeaves = Failed due to Exception:", e)
 
-    def test_save_order(self):
-        """
-        Test case for save_order() function.
-        """
+    def test_average_leaves(self):
         try:
-            filename = save_order(self.expected_order_summary, self.expected_total_bill, self.food_filename)
-            if os.path.exists(filename):
-                with open(filename, "r") as file:
-                    content = file.read()
-                result = "Total Bill: $54.75" in content
-                if result:
-                    self.test_obj.yakshaAssert("TestSaveOrder", True, "functional")
-                    print("TestSaveOrder = Passed")
-                else:
-                    self.test_obj.yakshaAssert("TestSaveOrder", False, "functional")
-                    print("TestSaveOrder = Failed")
-            else:
-                self.test_obj.yakshaAssert("TestSaveOrder", False, "functional")
-                print("TestSaveOrder = Failed ")
-            os.remove(filename)
+            result = average_leaves_taken(self.test_df)
+            expected = 4.0
+            self.test_obj.yakshaAssert("TestAverageLeaves", result == expected, "functional")
+            print("TestAverageLeaves =", "Passed" if result == expected else "Failed")
         except Exception as e:
-            self.test_obj.yakshaAssert("TestSaveOrder", False, "functional")
-            print(f"TestSaveOrder = Failed")
-
-    # ========== Blood Bank Management System Tests ==========
-    def test_add_new_blood_group(self):
-        """
-        Test case for add_new_blood_group() function.
-        """
-        result = add_new_blood_group(self.blood_bank, "P+", 10)
-        added = not result[result["Blood Group"] == "P+"].empty
-        if added:
-            self.test_obj.yakshaAssert("TestAddNewBloodGroup", True, "functional")
-            print("TestAddNewBloodGroup = Passed")
-        else:
-            self.test_obj.yakshaAssert("TestAddNewBloodGroup", False, "functional")
-            print("TestAddNewBloodGroup = Failed")
-
-
-    def test_get_total_units(self):
-        """
-        Test case for get_total_units() function.
-        """
-        total_units = get_total_units(self.blood_bank)
-        expected_total = self.blood_bank["Units Available"].sum()
-        result = total_units == expected_total
-        if result:
-            self.test_obj.yakshaAssert("TestGetTotalUnits", True, "functional")
-            print("TestGetTotalUnits = Passed")
-        else:
-            self.test_obj.yakshaAssert("TestGetTotalUnits", False, "functional")
-            print("TestGetTotalUnits = Failed")
-
-
-# test/test_employee_leave_management.py
-
+            print("TestAverageLeaves = Failed due to Exception:", e)
 import unittest
-import sys
-import os
-
-# Adjusting the path to import TestUtils and the employee leave management module
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import pandas as pd
+from BloodBankManagementSystem import total_units, low_stock_groups
 from test.TestUtils import TestUtils
-from EmployeeLeaveManagementSystem import (
-    get_employee_data,
-    process_leave_requests,
 
-)
+class TestBloodBank(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        cls.test_obj = TestUtils()
+        cls.blood_df = pd.DataFrame({
+            "Blood Group": ["A+", "B+", "O-", "AB-"],
+            "Units Available": [10, 8, 4, 3]
+        })
 
-class TestEmployeeLeaveManagement(unittest.TestCase):
-    def setUp(self):
-        # Initialize TestUtils object for yaksha assertions
-        self.test_obj = TestUtils()
-
-        # Sample Data for Testing
-        self.employees = get_employee_data()
-        self.leave_requests = [
-            ("E001", 3),  # Approved
-            ("E003", 2),  # Approved
-            ("E005", 6),  # Denied (Insufficient Balance)
-            ("E002", 1),  # Approved
-            ("E004", 5),  # Approved
-            ("E999", 3),  # Non-existent Employee ID
-            ("E003", -2)  # Invalid Negative Leave Request
-        ]
-
-        # Expected Data for Verification
-        self.expected_leave_summary = [
-            "John Doe granted 3 days leave. Remaining: 9 days",
-            "Bob Johnson granted 2 days leave. Remaining: 6 days",
-            "Michael Brown leave request denied. Insufficient balance.",
-            "Alice Smith granted 1 days leave. Remaining: 9 days",
-            "Emma Davis granted 5 days leave. Remaining: 10 days",
-            "Employee ID E999 not found.",
-            "Invalid leave request for Bob Johnson. Negative days not allowed."
-        ]
-        self.filename = "test_leave_status.txt"
-
-    def test_get_employee_data(self):
-        """
-        Test case for get_employee_data() function.
-        """
+    def test_total_units(self):
         try:
-            result = get_employee_data()
-            expected_result = {
-                "E001": {"name": "John Doe", "leave_balance": 12},
-                "E002": {"name": "Alice Smith", "leave_balance": 10},
-                "E003": {"name": "Bob Johnson", "leave_balance": 8},
-                "E004": {"name": "Emma Davis", "leave_balance": 15},
-                "E005": {"name": "Michael Brown", "leave_balance": 5}
+            result = total_units(self.blood_df)
+            expected = 25
+            self.test_obj.yakshaAssert("TestTotalUnits", result == expected, "functional")
+            print("TestTotalUnits =", "Passed" if result == expected else "Failed")
+        except Exception as e:
+            print("TestTotalUnits = Failed due to Exception:", e)
+
+    def test_low_stock(self):
+        try:
+            result = low_stock_groups(self.blood_df, threshold=5)
+            expected_groups = ["O-", "AB-"]
+            actual_groups = result["Blood Group"].tolist()
+            self.test_obj.yakshaAssert("TestLowStockGroups", actual_groups == expected_groups, "functional")
+            print("TestLowStockGroups =", "Passed" if actual_groups == expected_groups else "Failed")
+        except Exception as e:
+            print("TestLowStockGroups = Failed due to Exception:", e)
+import unittest
+from food import read_food_items, classify_food_items
+from test.TestUtils import TestUtils
+
+class TestFoodDelivery(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.test_obj = TestUtils()
+        cls.test_file = "test_food_items.txt"
+        with open(cls.test_file, "w", encoding="utf-8") as f:
+            f.write("Pizza,Veg\nChicken Wings,Non-Veg\nPasta,Veg\nFish Fry,Non-Veg")
+
+    def test_read_food_items(self):
+        try:
+            result = read_food_items(self.test_file)
+            expected = [("Pizza", "Veg"), ("Chicken Wings", "Non-Veg"), ("Pasta", "Veg"), ("Fish Fry", "Non-Veg")]
+            self.test_obj.yakshaAssert("TestReadFoodItems", result == expected, "functional")
+            print("TestReadFoodItems =", "Passed" if result == expected else "Failed")
+        except Exception as e:
+            print("TestReadFoodItems = Failed due to Exception:", e)
+
+    def test_classify_food_items(self):
+        try:
+            food_list = [("Pizza", "Veg"), ("Chicken Wings", "Non-Veg"), ("Pasta", "Veg"), ("Fish Fry", "Non-Veg")]
+            result = classify_food_items(food_list)
+            expected = {
+                "Veg": ["Pizza", "Pasta"],
+                "Non-Veg": ["Chicken Wings", "Fish Fry"]
             }
-            if result == expected_result:
-                self.test_obj.yakshaAssert("TestGetEmployeeData", True, "functional")
-                print("TestGetEmployeeData = Passed")
-            else:
-                self.test_obj.yakshaAssert("TestGetEmployeeData", False, "functional")
-                print("TestGetEmployeeData = Failed")
-
+            self.test_obj.yakshaAssert("TestClassifyFoodItems", result == expected, "functional")
+            print("TestClassifyFoodItems =", "Passed" if result == expected else "Failed")
         except Exception as e:
-            self.test_obj.yakshaAssert("TestGetEmployeeData", False, "functional")
-            print(f"TestGetEmployeeData = Failed ")
-
-    def test_process_leave_requests(self):
-        """
-        Test case for process_leave_requests() function.
-        """
-        try:
-            result = process_leave_requests(self.employees, self.leave_requests)
-            if result == self.expected_leave_summary:
-                self.test_obj.yakshaAssert("TestProcessLeaveRequests", True, "functional")
-                print("TestProcessLeaveRequests = Passed")
-            else:
-                self.test_obj.yakshaAssert("TestProcessLeaveRequests", False, "functional")
-                print("TestProcessLeaveRequests = Failed")
-
-        except Exception as e:
-            self.test_obj.yakshaAssert("TestProcessLeaveRequests", False, "functional")
-            print(f"TestProcessLeaveRequests = Failed ")
-
-
-
-if __name__ == '__main__':
-    unittest.main()
+            print("TestClassifyFoodItems = Failed due to Exception:", e)
