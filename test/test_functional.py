@@ -101,7 +101,7 @@ class TestFoodDelivery(unittest.TestCase):
     def test_read_food_items(self):
         try:
             result = read_food_items(self.test_file)
-            expected = [("Pizza", "Veg"), ("Chicken Wings", "Non-Veg"), ("Pasta", "Veg"), ("Fish Fry", "Non-Veg")]
+            expected = [("Pizza", "Veg"), ("Chicken Wings", "Non-Veg"), ("Pasta", "Veg"), ("Fish Fry", "Non-Veg"),("Noddles", "Veg")("lamb", "Non-Veg")]
             status = result == expected
             self.test_obj.yakshaAssert("TestReadFoodItems", status, "functional")
             print("TestReadFoodItems =", "Passed" if status else "Failed")
@@ -111,11 +111,11 @@ class TestFoodDelivery(unittest.TestCase):
 
     def test_classify_food_items(self):
         try:
-            food_list = [("Pizza", "Veg"), ("Chicken Wings", "Non-Veg"), ("Pasta", "Veg"), ("Fish Fry", "Non-Veg")]
+            food_list = [("Pizza", "Veg"), ("Chicken Wings", "Non-Veg"), ("Pasta", "Veg"), ("Fish Fry", "Non-Veg"),("Noddles", "Veg")("lamb", "Non-Veg")]
             result = classify_food_items(food_list)
             expected = {
-                "Veg": ["Pizza", "Pasta"],
-                "Non-Veg": ["Chicken Wings", "Fish Fry"]
+                "Veg": ["Pizza", "Pasta","Noodles"],
+                "Non-Veg": ["Chicken Wings", "Fish Fry","lamb"]
             }
             status = result == expected
             self.test_obj.yakshaAssert("TestClassifyFoodItems", status, "functional")
@@ -123,3 +123,4 @@ class TestFoodDelivery(unittest.TestCase):
         except Exception as e:
             self.test_obj.yakshaAssert("TestClassifyFoodItems", False, "functional")
             print("TestClassifyFoodItems = Failed due to Exception:", e)
+
