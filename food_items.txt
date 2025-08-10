@@ -1,8 +1,6 @@
 Pizza,Veg
 Chicken Wings,Non-Veg
-Fries,Veg
-Mutton Curry,Non-Veg
-Burger,Veg
+Pasta,Veg
 Fish Fry,Non-Veg
-Paneer Tikka,Veg
-Egg Roll,Non-Veg
+Noodles,Veg
+lamb,Non-Veg
