@@ -10,19 +10,14 @@ blood_df = pd.DataFrame({
     "Units Available": units_available
 })
 
-# TODO: Function 1 - Add a new blood group and its units to the DataFrame
-def add_blood_group(df, group, units):
-    # Add a new row to the DataFrame with given blood group and units
-    pass
 
-
-# TODO: Function 2 - Calculate the total units available across all groups
+# TODO: Function 1 - Calculate the total units available across all groups
 def total_units(df):
     # Return the sum of 'Units Available'
     pass
 
 
-# TODO: Function 3 - Get all blood groups with units less than a given threshold
+# TODO: Function 2 - Get all blood groups with units less than a given threshold
 def low_stock_groups(df, threshold=5):
     # Return DataFrame rows where 'Units Available' < threshold
     pass
@@ -38,3 +33,4 @@ if __name__ == "__main__":
     low_stock = low_stock_groups(blood_df, threshold=5)
     print("\nBlood Groups with Low Stock:")
     print(low_stock)
+
