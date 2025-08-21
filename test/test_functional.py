@@ -86,41 +86,63 @@ class TestBloodBank(unittest.TestCase):
             self.test_obj.yakshaAssert("TestLowStockGroups", False, "functional")
             print("TestLowStockGroups = Failed due to Exception:", e)
 import unittest
-from food import read_food_items, classify_food_items
+import os
 from test.TestUtils import TestUtils
+from food import read_food_sales, find_lowest_sales_item
 
-class TestFoodDelivery(unittest.TestCase):
-
+class TestFoodProcessing(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.test_obj = TestUtils()
-        cls.test_file = "test_food_items.txt"
-        with open(cls.test_file, "w", encoding="utf-8") as f:
-            f.write("Pizza,Veg\nChicken Wings,Non-Veg\nPasta,Veg\nFish Fry,Non-Veg")
+        cls.filename = "food_sales.txt"
+        with open(cls.filename, "w") as f:
+            f.write("Pizza,Veg,120\n")
+            f.write("Chicken Wings,Non-Veg,80\n")
+            f.write("Pasta,Veg,150\n")
+            f.write("Fish Fry,Non-Veg,60\n")
+            f.write("Noodles,Veg,200\n")
+            f.write("Lamb Curry,Non-Veg,90\n")
+            f.write("Salad,Veg,50\n")
+            f.write("Prawn Fry,Non-Veg,70\n")
 
-    def test_read_food_items(self):
+        cls.expected_items = [
+            ("Pizza", "Veg", 120),
+            ("Chicken Wings", "Non-Veg", 80),
+            ("Pasta", "Veg", 150),
+            ("Fish Fry", "Non-Veg", 60),
+            ("Noodles", "Veg", 200),
+            ("Lamb Curry", "Non-Veg", 90),
+            ("Salad", "Veg", 50),
+            ("Prawn Fry", "Non-Veg", 70),
+        ]
+
+    @classmethod
+    def tearDownClass(cls):
+        if os.path.exists(cls.filename):
+            os.remove(cls.filename)
+
+    def test_read_food_sales(self):
         try:
-            result = read_food_items(self.test_file)
-            expected = [("Pizza", "Veg"), ("Chicken Wings", "Non-Veg"), ("Pasta", "Veg"), ("Fish Fry", "Non-Veg"),("Noddles", "Veg")("lamb", "Non-Veg")]
-            status = result == expected
-            self.test_obj.yakshaAssert("TestReadFoodItems", status, "functional")
-            print("TestReadFoodItems =", "Passed" if status else "Failed")
-        except Exception as e:
-            self.test_obj.yakshaAssert("TestReadFoodItems", False, "functional")
-            print("TestReadFoodItems = Failed due to Exception:", e)
+            items = read_food_sales(self.filename)
+            self.assertEqual(items, self.expected_items)
+            self.test_obj.yakshaAssert("test_read_food_sales", True, "functional")
+            print("test_read_food_sales = Passed")
+        except Exception:
+            self.test_obj.yakshaAssert("test_read_food_sales", False, "exception")
+            print("test_read_food_sales = Failed")
 
-    def test_classify_food_items(self):
+    def test_find_lowest_sales_item(self):
         try:
-            food_list = [("Pizza", "Veg"), ("Chicken Wings", "Non-Veg"), ("Pasta", "Veg"), ("Fish Fry", "Non-Veg"),("Noddles", "Veg")("lamb", "Non-Veg")]
-            result = classify_food_items(food_list)
-            expected = {
-                "Veg": ["Pizza", "Pasta","Noodles"],
-                "Non-Veg": ["Chicken Wings", "Fish Fry","lamb"]
-            }
-            status = result == expected
-            self.test_obj.yakshaAssert("TestClassifyFoodItems", status, "functional")
-            print("TestClassifyFoodItems =", "Passed" if status else "Failed")
-        except Exception as e:
-            self.test_obj.yakshaAssert("TestClassifyFoodItems", False, "functional")
-            print("TestClassifyFoodItems = Failed due to Exception:", e)
+            items = read_food_sales(self.filename)
+            lowest = find_lowest_sales_item(items)
+            self.assertEqual(lowest, ("Salad", 50))  # Salad has lowest sales
+            self.test_obj.yakshaAssert("test_find_lowest_sales_item", True, "functional")
+            print("test_find_lowest_sales_item = Passed")
+        except Exception:
+            self.test_obj.yakshaAssert("test_find_lowest_sales_item", False, "exception")
+            print("test_find_lowest_sales_item = Failed")
 
+
+
+if __name__ == "__main__":
+    unittest.main()
