@@ -1,0 +1,8 @@
+Pizza,Veg,120
+Chicken Wings,Non-Veg,80
+Pasta,Veg,150
+Fish Fry,Non-Veg,60
+Noodles,Veg,200
+Lamb Curry,Non-Veg,90
+Salad,Veg,50
+Prawn Fry,Non-Veg,70
